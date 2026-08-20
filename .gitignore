@@ -1,0 +1,14 @@
+# editor / OS noise
+*~
+*.swp
+.DS_Store
+.vscode/
+.idea/
+
+# local build scratch (build.sh regenerates ssdt-s3.aml and acpi_s3.cpio,
+# but both are committed deliberately so the fix is usable without iasl)
+*.tmp
+
+# compiled python
+__pycache__/
+*.py[cod]
