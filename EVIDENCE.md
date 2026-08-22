@@ -3,15 +3,15 @@
 Raw kernel logs from the machine this was developed on: ThinkPad X1 Tablet 3rd gen
 (20KJ), BIOS N1ZET95W 1.51, Ubuntu, kernel 7.0.0-29-generic, Secure Boot off.
 
-Nothing here is edited except for the removal of unrelated lines; timestamps and the
-hostname are as they were.
+Nothing here is edited except for the removal of unrelated lines and the replacement of
+this machine's hostname with `tablet`; timestamps are as they were.
 
 ## Before — a normal boot, default GRUB entry
 
 The kernel is offered no S3, so `mem_sleep` has only one option:
 
     $ journalctl -k -b | grep "supports S0"
-    Aug 19 12:44:31 spirit kernel: ACPI: PM: (supports S0 S4 S5)
+    Aug 19 12:44:31 tablet kernel: ACPI: PM: (supports S0 S4 S5)
     $ cat /sys/power/mem_sleep
     [s2idle]
 
@@ -19,8 +19,8 @@ The kernel is offered no S3, so `mem_sleep` has only one option:
 
 The table is accepted at boot, and the kernel's advertised sleep states change:
 
-    Aug 19 15:57:51 spirit kernel: ACPI: Table Upgrade: install [SSDT-X1TAB3- S3ENABL]
-    Aug 19 15:57:51 spirit kernel: ACPI: PM: (supports S0 S3 S4 S5)
+    Aug 19 15:57:51 tablet kernel: ACPI: Table Upgrade: install [SSDT-X1TAB3- S3ENABL]
+    Aug 19 15:57:51 tablet kernel: ACPI: PM: (supports S0 S3 S4 S5)
     $ cat /sys/power/mem_sleep
     [s2idle] deep
 
@@ -29,24 +29,24 @@ would see instead if Secure Boot were still enabled.
 
 ## Three real S3 cycles, one session, no reboot between them
 
-    Aug 19 16:27:41.577056 spirit kernel: PM: suspend entry (deep)
-    Aug 19 16:28:32.162569 spirit kernel: ACPI: PM: Preparing to enter system sleep state S3
-    Aug 19 16:28:32.176040 spirit kernel: ACPI: PM: Low-level resume complete
-    Aug 19 16:28:32.176877 spirit kernel: ACPI: PM: Restoring platform NVS memory
-    Aug 19 16:28:32.183959 spirit kernel: ACPI: PM: Waking up from system sleep state S3
-    Aug 19 16:28:32.245630 spirit kernel: PM: suspend exit
-    Aug 19 16:48:45.796449 spirit kernel: PM: suspend entry (deep)
-    Aug 19 16:53:35.523517 spirit kernel: ACPI: PM: Preparing to enter system sleep state S3
-    Aug 19 16:53:35.525357 spirit kernel: ACPI: PM: Low-level resume complete
-    Aug 19 16:53:35.525542 spirit kernel: ACPI: PM: Restoring platform NVS memory
-    Aug 19 16:53:35.527006 spirit kernel: ACPI: PM: Waking up from system sleep state S3
-    Aug 19 16:53:35.616305 spirit kernel: PM: suspend exit
-    Aug 19 16:56:30.318064 spirit kernel: PM: suspend entry (deep)
-    Aug 19 17:04:32.417719 spirit kernel: ACPI: PM: Preparing to enter system sleep state S3
-    Aug 19 17:04:32.417897 spirit kernel: ACPI: PM: Low-level resume complete
-    Aug 19 17:04:32.417927 spirit kernel: ACPI: PM: Restoring platform NVS memory
-    Aug 19 17:04:32.418158 spirit kernel: ACPI: PM: Waking up from system sleep state S3
-    Aug 19 17:04:32.570299 spirit kernel: PM: suspend exit
+    Aug 19 16:27:41.577056 tablet kernel: PM: suspend entry (deep)
+    Aug 19 16:28:32.162569 tablet kernel: ACPI: PM: Preparing to enter system sleep state S3
+    Aug 19 16:28:32.176040 tablet kernel: ACPI: PM: Low-level resume complete
+    Aug 19 16:28:32.176877 tablet kernel: ACPI: PM: Restoring platform NVS memory
+    Aug 19 16:28:32.183959 tablet kernel: ACPI: PM: Waking up from system sleep state S3
+    Aug 19 16:28:32.245630 tablet kernel: PM: suspend exit
+    Aug 19 16:48:45.796449 tablet kernel: PM: suspend entry (deep)
+    Aug 19 16:53:35.523517 tablet kernel: ACPI: PM: Preparing to enter system sleep state S3
+    Aug 19 16:53:35.525357 tablet kernel: ACPI: PM: Low-level resume complete
+    Aug 19 16:53:35.525542 tablet kernel: ACPI: PM: Restoring platform NVS memory
+    Aug 19 16:53:35.527006 tablet kernel: ACPI: PM: Waking up from system sleep state S3
+    Aug 19 16:53:35.616305 tablet kernel: PM: suspend exit
+    Aug 19 16:56:30.318064 tablet kernel: PM: suspend entry (deep)
+    Aug 19 17:04:32.417719 tablet kernel: ACPI: PM: Preparing to enter system sleep state S3
+    Aug 19 17:04:32.417897 tablet kernel: ACPI: PM: Low-level resume complete
+    Aug 19 17:04:32.417927 tablet kernel: ACPI: PM: Restoring platform NVS memory
+    Aug 19 17:04:32.418158 tablet kernel: ACPI: PM: Waking up from system sleep state S3
+    Aug 19 17:04:32.570299 tablet kernel: PM: suspend exit
 
 Cycle lengths, measured from `suspend entry` to `Waking up`: **51 s**, **4 min 50 s**,
 **8 min 2 s**. Each one reports `(deep)` on the way down and `system sleep state S3` on
@@ -60,10 +60,10 @@ the kernel regains control, is not visible here.
 
 ## The only new lines on resume, and why they are harmless
 
-    Aug 19 17:04:33 spirit kernel: Bluetooth: hci0: Device booted in 12659 usecs
-    Aug 19 17:04:33 spirit kernel: Bluetooth: hci0: Firmware revision 0.1 build 19 week 44 2021
-    Aug 19 17:04:33 spirit kernel: Bluetooth: hci0: Reading supported features failed (-16)
-    Aug 19 17:04:33 spirit kernel: Bluetooth: hci0: Error reading debug features
+    Aug 19 17:04:33 tablet kernel: Bluetooth: hci0: Device booted in 12659 usecs
+    Aug 19 17:04:33 tablet kernel: Bluetooth: hci0: Firmware revision 0.1 build 19 week 44 2021
+    Aug 19 17:04:33 tablet kernel: Bluetooth: hci0: Reading supported features failed (-16)
+    Aug 19 17:04:33 tablet kernel: Bluetooth: hci0: Error reading debug features
 
 These appear after every S3 resume. They are not an S3 regression: the same two
 `failed` / `Error` lines appear **twice on every ordinary boot of this machine**,
